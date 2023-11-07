@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyszukiwarka Książek</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Wyszukiwarka Książek</h1>
+
+        <!-- Formularz wyszukiwania z Bootstrap -->
+        <form id="searchForm">
+            <div class="mb-3">
+                <label for="searchInput" class="form-label">Szukaj książki:</label>
+                <input type="text" id="searchInput" class="form-control" placeholder="Tytuł książki">
+            </div>
+            <button type="submit" class="btn btn-primary">Szukaj</button>
+        </form>
+
+        <!-- Lista książek -->
+        <ul id="bookList" class="mt-4">
+        </ul>
+    </div>
+
+    <script>
+        // Tablica książek
+        const books = [
+            { title: "Harry Potter and the Sorcerer's Stone", author: "J.K. Rowling" },
+            { title: "To Kill a Mockingbird", author: "Harper Lee" },
+            { title: "The Great Gatsby", author: "F. Scott Fitzgerald" },
+            { title: "1984", author: "George Orwell" },
+            { title: "The Hobbit", author: "J.R.R. Tolkien" },
+        ];
+
+        // Funkcja do wyświetlania listy książek
+        function displayBooks(books) {
+            const bookList = document.getElementById("bookList");
+            bookList.innerHTML = ""; // Wyczyść listę przed wyświetleniem nowych wyników
+
+            books.forEach(book => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${book.title} - ${book.author}`;
+                bookList.appendChild(listItem);
+            });
+        }
+
+        // Obsługa wyszukiwania książek
+        const searchForm = document.getElementById("searchForm");
+        const searchInput = document.getElementById("searchInput");
+
+        searchForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredBooks = books.filter(book =>
+                book.title.toLowerCase().includes(searchTerm) || book.author.toLowerCase().includes(searchTerm)
+            );
+            displayBooks(filteredBooks);
+        });
+
+        // Wyświetl wszystkie książki na początek
+        displayBooks(books);
+    </script>
+</body>
+</html>
