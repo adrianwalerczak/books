@@ -1,6 +1,6 @@
-// W pliku script.js
-
-const books = [
+   // Tablica książek
+        
+   const books = [
     { title: "Harry Potter and the Sorcerer's Stone", author: "J.K. Rowling" },
     { title: "To Kill a Mockingbird", author: "Harper Lee" },
     { title: "The Great Gatsby", author: "F. Scott Fitzgerald" },
@@ -140,46 +140,63 @@ const books = [
 
         ];
 
-const itemsPerPage = 10; // Liczba książek na stronie
-let currentPage = 1;
 
-const bookList = document.getElementById("bookList");
-const pagination = document.getElementById("pagination");
 
-function displayBooks(page) {
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const displayedBooks = books.slice(startIndex, endIndex);
+        // Ilość książek na stronę
+        const booksPerPage = 20;
+        let currentPage = 1;
 
-    bookList.innerHTML = "";
-    displayedBooks.forEach((book) => {
-        const li = document.createElement("li");
-        li.className = "list-group-item";
-        li.textContent = `${book.title} by ${book.author}`;
-        bookList.appendChild(li);
-    });
-}
+        // Funkcja do wyświetlania listy książek
+        function displayBooks(books) {
+            const bookList = document.getElementById("bookList");
+            bookList.innerHTML = ""; // Wyczyść listę przed wyświetleniem nowych wyników
 
-function updatePagination() {
-    pagination.innerHTML = "";
-    const pageCount = Math.ceil(books.length / itemsPerPage);
-    for (let i = 1; i <= pageCount; i++) {
-        const li = document.createElement("li");
-        li.className = "page-item";
-        const a = document.createElement("a");
-        a.className = "page-link";
-        a.href = "#";
-        a.textContent = i;
-        a.addEventListener("click", (event) => {
-            event.preventDefault();
-            currentPage = i;
-            displayBooks(currentPage);
-            updatePagination();
+            // Oblicz zakres książek do wyświetlenia na bieżącej stronie
+            const startIndex = (currentPage - 1) * booksPerPage;
+            const endIndex = startIndex + booksPerPage;
+            const currentBooks = books.slice(startIndex, endIndex);
+
+            currentBooks.forEach(book => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${book.title} - ${book.author}`;
+                bookList.appendChild(listItem);
+            });
+
+            // Aktualizuj paginację
+            updatePagination(books.length);
+        }
+
+        // Funkcja do aktualizacji paginacji
+        function updatePagination(totalBooks) {
+            const pagination = document.getElementById("pagination");
+            pagination.innerHTML = "";
+
+            const totalPages = Math.ceil(totalBooks / booksPerPage);
+            for (let i = 1; i <= totalPages; i++) {
+                const pageItem = document.createElement("li");
+                pageItem.classList.add("page-item");
+                const pageLink = document.createElement("a");
+                pageLink.classList.add("page-link");
+                pageLink.textContent = i;
+                pageLink.addEventListener("click", () => {
+                    currentPage = i;
+                    displayBooks(books);
+                });
+                pageItem.appendChild(pageLink);
+                pagination.appendChild(pageItem);
+            }
+        }
+
+        // Obsługa wyszukiwania książek w czasie rzeczywistym
+        const searchInput = document.getElementById("searchInput");
+
+        searchInput.addEventListener("input", () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredBooks = books.filter(book =>
+                book.title.toLowerCase().includes(searchTerm) || book.author.toLowerCase().includes(searchTerm)
+            );
+            displayBooks(filteredBooks);
         });
-        li.appendChild(a);
-        pagination.appendChild(li);
-    }
-}
 
-displayBooks(currentPage);
-updatePagination();
+        // Wyświetl wszystkie książki na początek
+        displayBooks(books);
